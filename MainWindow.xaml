@@ -1,0 +1,119 @@
+<Window x:Class="SvitloTray.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SvitloTray" Width="940" Height="700" MinWidth="780" MinHeight="480"
+        WindowStartupLocation="CenterScreen" FontSize="13">
+    <Window.Resources>
+        <FontFamily x:Key="Icons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    </Window.Resources>
+
+    <Grid Margin="24,12,24,14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Bottom">
+                <TextBlock Text="Графік відключень" FontSize="24" FontWeight="SemiBold" />
+                <TextBlock x:Name="SubtitleText" Style="{StaticResource Caption}" FontSize="13" Margin="0,2,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Область" Style="{StaticResource Caption}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="RegionBox" Width="200" DisplayMemberPath="Name" SelectionChanged="RegionBox_SelectionChanged" />
+                </StackPanel>
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Підчерга" Style="{StaticResource Caption}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="QueueBox" Width="84" SelectionChanged="QueueBox_SelectionChanged" />
+                </StackPanel>
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Попереджати за" Style="{StaticResource Caption}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="WarnBox" Width="96" SelectionChanged="WarnBox_SelectionChanged" />
+                </StackPanel>
+                <Button VerticalAlignment="Bottom" Padding="10,7" ToolTip="Оновити зараз" Click="Refresh_Click">
+                    <TextBlock Text="&#xE72C;" FontFamily="{StaticResource Icons}" FontSize="16" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Current status -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,12" Padding="20,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border x:Name="StatusBadge" Width="56" Height="56" CornerRadius="28" Margin="0,0,16,0" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE945;" FontFamily="{StaticResource Icons}" FontSize="26" Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusText" FontSize="26" FontWeight="SemiBold" />
+                    <TextBlock x:Name="StatusInfoText" Style="{StaticResource Caption}" FontSize="13" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <TextBlock x:Name="CountdownText" FontSize="26" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                    <TextBlock x:Name="UntilText" Style="{StaticResource Caption}" FontSize="13" HorizontalAlignment="Right" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <Border Grid.Row="1" Grid.ColumnSpan="3" Height="4" CornerRadius="2" Margin="0,16,0,0" Background="#33808080" ClipToBounds="True">
+                    <Grid x:Name="ProgressGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="ProgressFill" CornerRadius="2" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Days -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="DaysPanel" />
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="12" Height="12" CornerRadius="3" Background="#30A46C" Margin="0,0,6,0" />
+                <TextBlock Text="Світло є" Style="{StaticResource Caption}" Margin="0,0,14,0" />
+                <Border Width="12" Height="12" CornerRadius="3" Background="#E5484D" Margin="0,0,6,0" />
+                <TextBlock Text="Немає" Style="{StaticResource Caption}" Margin="0,0,14,0" />
+                <Border Width="12" Height="12" CornerRadius="3" Background="#F5A524" Margin="0,0,6,0" />
+                <TextBlock Text="Можливе" Style="{StaticResource Caption}" Margin="0,0,14,0" />
+                <CheckBox x:Name="AutostartBox" Content="Запускати з Windows" Margin="8,0,0,0"
+                          Checked="AutostartBox_Changed" Unchecked="AutostartBox_Changed" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock x:Name="FooterText" Style="{StaticResource Caption}" TextAlignment="Right" TextWrapping="Wrap" />
+                <TextBlock x:Name="ErrorText" FontSize="12" Foreground="#E5484D" TextAlignment="Right" TextWrapping="Wrap"
+                           Visibility="Collapsed" Margin="0,2,0,0" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
